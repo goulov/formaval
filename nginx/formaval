@@ -1,0 +1,25 @@
+server {
+	listen 80;
+	server_name localhost;
+	access_log /var/log/nginx/formaval_access.log;
+	error_log /var/log/nginx/formaval_error.log;
+	location / {
+		proxy_pass http://localhost:8800;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_redirect off;
+
+	}
+	location /viewdb {
+		proxy_pass http://localhost:8800;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_redirect off;
+		auth_basic "Database - Restricted";
+		auth_basic_user_file /etc/nginx/.htpasswd;
+	}
+}

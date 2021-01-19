@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>>Databases</title>
+    <style>
+    table, th, td {
+      border: 1px solid black;
+    }
+    </style>
+</head>
+<body>
+    <div style="float: left;margin-right:30px">
+        <h1>Lista de alunos</h1>
+        <table>
+            <tr style="background-color:DarkGray">
+                <th>IST ID</th>
+                <th>Curso</th>
+                <th>Turno</th>
+                <th>Hora</th>
+                <th>Versão</th>
+                <th>1o acesso</th>
+                <th>1o IP</th>
+            </tr>
+        {% for row in students %}
+            <tr>
+                <th>{{row.istid}}</th>
+                <th>{{row.course}}</th>
+                <th>{{row.shift if row.shift}}</th>
+                {% if row.shift and not mapa[row.shift] %}
+                    <th style="background-color:Orange">disabled</th>
+                {% else %}
+                    <th>{{mapa[row.shift][0]|string + "a - "+mapa[row.shift][1].strftime("%H:%M") if row.shift}}</th>
+                {% endif %}
+                <th>{{row.version if row.version}}</th>
+                <th>{{row.timelogged1st if row.timelogged1st}}</th>
+                <th>{{row.iplogged1st if row.iplogged1st}}</th>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    <div style="float: left">
+        <h1>Lista de Submissões</h1>
+        <table>
+            <tr style="background-color:DarkGray">
+                <th>Hora</th>
+                <th>Submissão</th>
+                <th>Status</th>
+                <th>IP</th>
+                <th>IP Repetido?</th>
+            </tr>
+        {% for row in logs[::-1] %}
+            {% if "HORRIBLE" in row.status %}
+                <tr style="background-color:Purple">
+            {% elif "CHECK" in row.status %}
+                <tr style="background-color:Yellow">
+            {% elif "BAD" in row.status %}
+                <tr style="background-color:Red">
+            {% elif "OK" in row.status %}
+                <tr style="background-color:ForestGreen">
+            {% else %}
+                <tr>
+            {% endif %}
+                <th>{{row.time}}</th>
+                <th>{{row.req[:50]}}</th>
+                <th>{{row.status}}</th>
+                <th>{{row.ip}}</th>
+                <th>{{row.repeatedQ}}</th>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
